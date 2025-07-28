@@ -5,5 +5,9 @@ async function gasPrice(chainId) {
   const params = {};
 
   const res = await call(endpoint, params);
-  console.log(res);
+  return res;
 }
+
+module.exports = {
+  gasPrice,
+};

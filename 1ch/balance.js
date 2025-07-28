@@ -5,7 +5,7 @@ async function allTokenBalance(address, chainId) {
   const params = {};
 
   const res = await call(endpoint, params);
-  console.log(res);
+  return res;
 }
 
 async function balanceAndAllowanceByAddress(
@@ -13,9 +13,13 @@ async function balanceAndAllowanceByAddress(
   chainId,
   spenderAddress
 ) {
-  const endpoint = `/balance/v1.2/${chainId}/allowancesAndBalances/${spenderAddress}/${walletAddress}";`;
+  const endpoint = `/balance/v1.2/${chainId}/allowancesAndBalances/${spenderAddress}/${walletAddress}`;
   const params = {};
   const res = await call(endpoint, params);
-  console.log(res);
   return res;
 }
+
+module.exports = {
+  allTokenBalance,
+  balanceAndAllowanceByAddress,
+};
