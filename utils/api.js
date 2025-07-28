@@ -24,4 +24,29 @@ async function call(endpoint, params) {
   }
 }
 
-module.exports = { call };
+async function post(endpoint, data) {
+  const url = `${baseUrl}${endpoint}`;
+  const body = {
+    orderHashes: data,
+  };
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    params: {},
+    paramsSerializer: {
+      indexes: null,
+    },
+  };
+
+  try {
+    const response = await axios.post(url, body, config);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports = { call, post };
