@@ -1,10 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const fusionService = require("../services/fusion.js");
-const { gaslessSwapActiveOrders, getOrderByHash } = require("../1ch/fusion.js");
+const fusionPlusService = require("../services/fusionPlus.js");
+const {
+  crossChainSwapActiveOrders,
+  escrowAddress,
+  orderStatus,
+} = require("../1ch/fusion+orders.js");
 
-router.get("/settlement-addresses", async (req, res) => {
-  const result = await fusionService.settlementAddressLists();
+router.get("/escrow-addresses", async (req, res) => {
+  const result = await fusionPlusService.escrowAddressLists();
   res.status(200).json({
     success: true,
     result,
@@ -12,8 +16,8 @@ router.get("/settlement-addresses", async (req, res) => {
 });
 
 router.get("/active-orders", async (req, res) => {
-  const { chainId } = req.query;
-  const result = await gaslessSwapActiveOrders(chainId);
+  const { srChainId, dstChainId } = req.query;
+  const result = await gaslessSwapActiveOrders(srChainId, dstChainId);
   res.status(200).json({
     success: true,
     result,

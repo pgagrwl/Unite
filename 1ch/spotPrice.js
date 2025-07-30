@@ -16,7 +16,16 @@ async function priceList(chainId, currency) {
   return res;
 }
 
+async function tokenPrice(chainId, address, currency) {
+  const endpoint = `/price/v1.1/${chainId}/${address}`;
+  const params = { currency: currency };
+
+  const res = await call(endpoint, params);
+  return res;
+}
+
 module.exports = {
   currencies,
   priceList,
+  tokenPrice,
 };
