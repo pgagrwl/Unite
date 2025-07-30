@@ -1,8 +1,8 @@
 const { call } = require("../utils/api.js");
 
-async function crossChainSwapActiveOrders(srChainId, dstChainId) {
+async function crossChainSwapActiveOrders(srcChainId, dstChainId) {
   const endpoint = `/fusion-plus/orders/v1.0/order/active`;
-  const params = { srcChain: srChainId, dstChain: dstChainId };
+  const params = { srcChain: srcChainId, dstChain: dstChainId };
 
   const res = await call(endpoint, params);
   return res;
