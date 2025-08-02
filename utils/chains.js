@@ -12,11 +12,11 @@ const dropDownChains = [
     id: 8453,
   },
   {
-    network: "Binance",
+    network: "BNB Smart Chain",
     id: 56,
   },
   {
-    network: "ZkSync",
+    network: "ZkSync Era",
     id: 324,
   },
   {
@@ -32,7 +32,7 @@ const dropDownChains = [
     id: 10,
   },
   {
-    network: "Polygon",
+    network: "Polygon PoS",
     id: 137,
   },
   {
