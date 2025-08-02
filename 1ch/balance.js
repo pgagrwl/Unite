@@ -19,7 +19,15 @@ async function balanceAndAllowanceByAddress(
   return res;
 }
 
+async function supportedCurrencies(chainId) {
+  const endpoint = `/price/v1.1/${chainId}/currencies`;
+  const params = {};
+  const res = await call(endpoint, params);
+  return res;
+}
+
 module.exports = {
   allTokenBalance,
   balanceAndAllowanceByAddress,
+  supportedCurrencies,
 };
