@@ -1,0 +1,57 @@
+<div style="padding: 1rem">
+  <h2>
+    List of liquidity sources that are available for routing in the 1inch
+    Aggregation Protocol
+  </h2>
+
+  <div *ngIf="loading">Loading...</div>
+
+  <div *ngIf="sourcesData?.result">
+    <!-- Filters -->
+    <div style="margin-bottom: 1rem">
+      <label>
+        Filter by Network:
+        <select [(ngModel)]="filters.network">
+          <option value="">All</option>
+          <option *ngFor="let net of uniqueNetworks" [value]="net">
+            {{ net }}
+          </option>
+        </select>
+      </label>
+
+      <label style="margin-left: 1rem">
+        Filter by Title:
+        <input
+          type="text"
+          [(ngModel)]="filters.title"
+          placeholder="e.g. Balancer"
+        />
+      </label>
+    </div>
+
+    <!-- Results Table -->
+    <table
+      border="1"
+      cellpadding="8"
+      cellspacing="0"
+      style="width: 100%; text-align: left"
+    >
+      <thead>
+        <tr>
+          <th>Network</th>
+          <th>Title</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let src of getFilteredSources()">
+          <td>{{ src.network }}</td>
+          <td>
+            <img [src]="src.img_color" alt="{{ src.image }}" width="30" />{{
+              src.title
+            }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

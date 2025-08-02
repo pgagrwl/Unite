@@ -11,8 +11,19 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home';
 import { SwapsComponent } from './pages/swaps/swaps';
+import { SwapAvailableComponent } from './pages/swaps/swaps-available';
+import { SwapLiquidityComponent } from './pages/swaps/swaps-liquidity-sources';
+import { SwapTrustesComponent } from './pages/swaps/swaps-trusted-spender';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'swaps', component: SwapsComponent },
+  {
+    path: 'swaps',
+    component: SwapsComponent,
+    children: [
+      { path: 'available-tokens', component: SwapAvailableComponent },
+      { path: 'liquidity-sources', component: SwapLiquidityComponent },
+      { path: 'trusted-spenders', component: SwapTrustesComponent },
+    ],
+  },
 ];

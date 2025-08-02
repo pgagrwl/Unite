@@ -1,84 +1,24 @@
-<div style="padding: 1rem">
-  <h2>Swaps Data</h2>
-  <button (click)="availableSwaps()">Swaps Data</button>
-  <div *ngIf="swapLoading">Loading...</div>
-
-  <div *ngIf="swapData?.result">
-    <!-- Filter Controls -->
-    <div style="margin: 1rem 0">
-      <label>
-        Filter by Network:
-        <select [(ngModel)]="filters.network">
-          <option value="">All</option>
-          <option *ngFor="let net of uniqueNetworks" [value]="net">
-            {{ net }}
-          </option>
-        </select>
-      </label>
-
-      <label style="margin-left: 1rem">
-        Filter by Symbol:
-        <input
-          type="text"
-          [(ngModel)]="filters.symbol"
-          placeholder="e.g. AAVE"
-        />
-      </label>
-
-      <label style="margin-left: 1rem">
-        Filter by Name:
-        <input
-          type="text"
-          [(ngModel)]="filters.name"
-          placeholder="e.g. Rocket Pool"
-        />
-      </label>
-    </div>
-
-    <!-- Single Combined Table -->
-    <table
-      border="1"
-      cellpadding="8"
-      cellspacing="0"
-      style="width: 100%; text-align: left"
-    >
-      <thead>
-        <tr>
-          <th>Network</th>
-          <th>Logo</th>
-          <th>Symbol</th>
-          <th>Name</th>
-          <th>Price In USD</th>
-          <th>Address</th>
-          <th>EIP-2612</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let token of getAllFilteredTokens()">
-          <td>{{ token.network }}</td>
-          <td>
-            <img
-              [src]="token.logoURI"
-              alt="{{ token.symbol }}"
-              width="30"
-              height="30"
-            />
-          </td>
-          <td>{{ token.symbol }}</td>
-          <td>{{ token.name }}</td>
-          <td>$ {{ token.priceInUSD ? token.priceInUSD : "No Data" }}</td>
-          <td style="font-size: small">
-            <a
-              [href]="getExplorerUrl(token.chainId, token.address)"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ token.address }}
-            </a>
-          </td>
-          <td>{{ token.eip2612 ? "Yes" : "No" }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+<!-- swaps.component.html -->
+<!-- <h2>Classic Swap</h2> -->
+<nav
+  style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #daab12;
+    padding: 1rem;
+  "
+>
+  <a routerLink="/swaps/available-tokens" style="margin-right: 1rem"
+    >Token List</a
+  >
+  <a routerLink="/swaps/liquidity-sources" style="margin-right: 1rem"
+    >Liquidity Sources</a
+  >
+  <a routerLink="/swaps/trusted-spenders" style="margin-right: 1rem"
+    >Trusted Spenders</a
+  >
+  <!-- <a routerLink="basic" routerLinkActive="active">Basic Swap</a> |
+  <a routerLink="advanced" routerLinkActive="active">Advanced Swap</a> -->
+</nav>
+<router-outlet></router-outlet>

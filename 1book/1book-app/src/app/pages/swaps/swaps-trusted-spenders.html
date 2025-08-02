@@ -1,0 +1,38 @@
+<div style="padding: 1rem">
+  <h2>
+    Address of the 1inch Router that is trusted to spend funds for the swap
+  </h2>
+
+  <div *ngIf="loading">Loading...</div>
+
+  <div *ngIf="spendersData?.result">
+    <!-- Results Table -->
+    <table
+      border="1"
+      cellpadding="8"
+      cellspacing="0"
+      style="width: 100%; text-align: left"
+    >
+      <thead>
+        <tr>
+          <th>Network</th>
+          <th>Spender Address</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let res of spendersData?.result">
+          <td>{{ res.network }}</td>
+          <td>
+            <a
+              [href]="getExplorerUrl(res.chainId, res.trustedSpender)"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ res.trustedSpender }}
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
