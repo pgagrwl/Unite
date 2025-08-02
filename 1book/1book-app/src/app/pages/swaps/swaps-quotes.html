@@ -1,0 +1,179 @@
+<div style="padding: 1rem; max-width: 500px">
+  <h2>Swap Quote Request</h2>
+  <form (ngSubmit)="onSubmit()" #swapForm="ngForm">
+    <div>
+      <label for="chain">Chain:</label>
+      <select
+        id="chain"
+        [(ngModel)]="form.chain"
+        name="chain"
+        required
+        (change)="onChainChange()"
+      >
+        <option value="" disabled selected>Select Chain</option>
+        <option *ngFor="let chain of chains" [value]="chain">
+          {{ chain }}
+        </option>
+      </select>
+    </div>
+
+    <div style="margin-top: 1rem">
+      <label for="srcToken">Source Token:</label>
+      <select
+        id="srcToken"
+        [(ngModel)]="form.srcToken"
+        name="srcToken"
+        required
+        [disabled]="!form.chain"
+        (change)="onSrcTokenChange()"
+      >
+        <option value="" disabled selected>Select Source Token</option>
+        <option *ngFor="let token of uniqueSrcTokens" [value]="token.symbol">
+          {{ token.symbol }}
+        </option>
+      </select>
+      <div *ngIf="form.srcToken">
+        <small>
+          {{ getTokenName(form.srcToken) }}
+        </small>
+        <small> $ {{ getTokenPrice(form.srcToken) }} </small>
+      </div>
+    </div>
+
+    <div style="margin-top: 1rem">
+      <label for="dstToken">Destination Token:</label>
+      <select
+        id="dstToken"
+        [(ngModel)]="form.dstToken"
+        name="dstToken"
+        required
+        [disabled]="!form.chain || !form.srcToken"
+        (change)="onDstTokenChange()"
+      >
+        <option value="" disabled selected>Select Destination Token</option>
+        <option *ngFor="let token of uniqueDstTokens" [value]="token.symbol">
+          {{ token.symbol }}
+        </option>
+      </select>
+      <div *ngIf="form.dstToken">
+        <small>
+          {{ getTokenName(form.dstToken) }}
+        </small>
+        <small> $ {{ getTokenPrice(form.dstToken) }} </small>
+      </div>
+    </div>
+
+    <div style="margin-top: 1rem">
+      <label for="amount">Amount:</label>
+      <input
+        type="number"
+        id="amount"
+        [(ngModel)]="form.amount"
+        name="amount"
+        placeholder="Enter amount"
+        required
+        [disabled]="!form.chain || !form.srcToken || !form.dstToken"
+      />
+    </div>
+
+    <button
+      style="margin-top: 1rem"
+      (click)="bestQuote()"
+      [disabled]="!swapForm.form.valid"
+    >
+      Get Quotes
+    </button>
+  </form>
+</div>
+<div *ngIf="bestData?.success" style="margin-top: 2rem">
+  <h3>Swap Quote Result</h3>
+
+  <table
+    style="
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 14px;
+    "
+  >
+    <thead>
+      <tr style="background: #f0f0f0">
+        <th style="padding: 0.5rem; border: 1px solid #ccc">Source Token</th>
+        <th style="padding: 0.5rem; border: 1px solid #ccc">
+          Destination Token
+        </th>
+        <th style="padding: 0.5rem; border: 1px solid #ccc">Amount Out</th>
+        <th style="padding: 0.5rem; border: 1px solid #ccc">Gas</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 0.5rem; border: 1px solid #ccc">
+          <img
+            [src]="bestData.result.srcToken.logoURI"
+            width="20"
+            height="20"
+            style="vertical-align: middle"
+          />
+          {{ bestData.result.srcToken.symbol }} ({{
+            bestData.result.srcToken.name
+          }})
+        </td>
+        <td style="padding: 0.5rem; border: 1px solid #ccc">
+          <img
+            [src]="bestData.result.dstToken.logoURI"
+            width="20"
+            height="20"
+            style="vertical-align: middle"
+          />
+          {{ bestData.result.dstToken.symbol }} ({{
+            bestData.result.dstToken.name
+          }})
+        </td>
+        <td style="padding: 0.5rem; border: 1px solid #ccc">
+          {{ (bestData.result.dstAmount / (10 ** bestData.result.dstToken.decimals)).toFixed(6) }}
+        </td>
+        <td style="padding: 0.5rem; border: 1px solid #ccc">
+          {{ bestData.result.gas }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div
+    *ngFor="let protocol of bestData.result.protocols"
+    style="margin-top: 1.5rem"
+  >
+    <h4>Protocol Path for Token: {{ protocol.token }}</h4>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+      <thead>
+        <tr style="background: #f9f9f9">
+          <th style="padding: 0.5rem; border: 1px solid #ccc">Hop Part (%)</th>
+          <th style="padding: 0.5rem; border: 1px solid #ccc">From Token ID</th>
+          <th style="padding: 0.5rem; border: 1px solid #ccc">To Token ID</th>
+          <th style="padding: 0.5rem; border: 1px solid #ccc">Protocols</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let hop of protocol.hops">
+          <td style="padding: 0.5rem; border: 1px solid #ccc">
+            {{ hop.part }}%
+          </td>
+          <td style="padding: 0.5rem; border: 1px solid #ccc">
+            {{ hop.fromTokenId }}
+          </td>
+          <td style="padding: 0.5rem; border: 1px solid #ccc">
+            {{ hop.toTokenId }}
+          </td>
+          <td style="padding: 0.5rem; border: 1px solid #ccc">
+            <ul style="margin: 0; padding-left: 1rem">
+              <li *ngFor="let p of hop.protocols">
+                {{ p.name }} ({{ p.part }}%)
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

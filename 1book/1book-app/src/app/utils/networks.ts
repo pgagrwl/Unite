@@ -1,4 +1,4 @@
-const fusionPlusChains = [
+export const fusionPlusChains = [
   {
     network: 'Arbitrum',
     id: 42161,
@@ -41,7 +41,7 @@ const fusionPlusChains = [
   },
 ];
 
-const fusionChains = [
+export const fusionChains = [
   {
     network: 'Arbitrum',
     id: 42161,
@@ -88,7 +88,7 @@ const fusionChains = [
   },
 ];
 
-const classicSwapChains = [
+export const classicSwapChains = [
   {
     network: 'Arbitrum',
     id: 42161,
@@ -138,9 +138,3 @@ const classicSwapChains = [
     id: 59144,
   },
 ];
-
-module.exports = {
-  fusionChains,
-  fusionPlusChains,
-  classicSwapChains,
-};

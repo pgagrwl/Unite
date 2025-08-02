@@ -14,6 +14,7 @@ import { SwapsComponent } from './pages/swaps/swaps';
 import { SwapAvailableComponent } from './pages/swaps/swaps-available';
 import { SwapLiquidityComponent } from './pages/swaps/swaps-liquidity-sources';
 import { SwapTrustesComponent } from './pages/swaps/swaps-trusted-spender';
+import { SwapQuotesComponent } from './pages/swaps/swaps-quotes';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -24,6 +25,7 @@ export const routes: Routes = [
       { path: 'available-tokens', component: SwapAvailableComponent },
       { path: 'liquidity-sources', component: SwapLiquidityComponent },
       { path: 'trusted-spenders', component: SwapTrustesComponent },
+      { path: 'quotes', component: SwapQuotesComponent },
     ],
   },
 ];

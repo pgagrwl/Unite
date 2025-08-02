@@ -25,10 +25,10 @@ export class SwapTrustesComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.fetchSources();
+    this.fetchSpenders();
   }
 
-  fetchSources() {
+  fetchSpenders() {
     this.loading = true;
     this.http.get('http://localhost:3000/swaps/trusted-spenders').subscribe({
       next: (res: any) => {
