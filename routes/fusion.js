@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const fusionService = require("../services/fusion.js");
 const { gaslessSwapActiveOrders, getOrderByHash } = require("../1ch/fusion.js");
+const Fusion = require("../models/fusionOrders.js");
 
 router.get("/settlement-addresses", async (req, res) => {
   const result = await fusionService.settlementAddressLists();
@@ -44,6 +45,16 @@ router.post("/order-status", async (req, res) => {
       message: "Error fetching order status",
       error: error.message,
     });
+  }
+});
+
+router.get("/fusion-orders", async (req, res) => {
+  try {
+    const orders = await Fusion.find().sort({ _id: -1 });
+    res.json({ success: true, count: orders.length, data: orders });
+  } catch (err) {
+    console.error("Error fetching Fusion orders:", err.message);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 });
 

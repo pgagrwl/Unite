@@ -11,4 +11,13 @@ router.get("/gas-prices", async (req, res) => {
   });
 });
 
+router.get("/gas-price", async (req, res) => {
+  const { chainId, currency } = req.query;
+  const result = await gasService.gasPriceByChain(chainId, currency);
+  res.status(200).json({
+    success: true,
+    result,
+  });
+});
+
 module.exports = router;
