@@ -174,12 +174,10 @@ async function getQuotesList(chainId, srcToken, dstToken, amount) {
       protocolId
     );
     if (!quote) continue;
-    console.log(quote);
     results.push(quote);
     await sleep(1000); // Delay of 1 second
   }
 
-  console.log(results);
   return results;
 }
 
@@ -195,5 +193,3 @@ module.exports = {
   trustedSpenderLists,
   getQuotesList,
 };
-
-// getQuotesList(1);

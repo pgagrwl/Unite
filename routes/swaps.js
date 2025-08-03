@@ -29,7 +29,6 @@ router.get("/trusted-spenders", async (req, res) => {
 
 router.get("/tokens-list", async (req, res) => {
   const { chainId } = req.query;
-  console.log(chainId);
   const result = await swapService.availableSwapTokensbyChain(chainId);
   res.status(200).json({
     success: true,
@@ -37,7 +36,7 @@ router.get("/tokens-list", async (req, res) => {
   });
 });
 
-router.get("/get-quotes", async (req, res) => {
+router.get("/all-quotes", async (req, res) => {
   const { chainId, srcAsset, dstAsset, amount } = req.query;
   try {
     const result = await swapService.getQuotesList(
@@ -60,7 +59,6 @@ router.get("/get-quotes", async (req, res) => {
 });
 
 router.get("/best-quote", async (req, res) => {
-  console.log(req.query);
   const { chainId, srcAsset, dstAsset, amount } = req.query;
   try {
     const result = await bestQuote(chainId, srcAsset, dstAsset, amount);

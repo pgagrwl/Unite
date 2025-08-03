@@ -6,6 +6,7 @@ const {
   escrowAddress,
   orderStatus,
 } = require("../1ch/fusion+orders.js");
+const FusionPlus = require("../models/fusionPlusOrders.js");
 
 router.get("/escrow-addresses", async (req, res) => {
   const result = await fusionPlusService.escrowAddressLists();
@@ -25,8 +26,8 @@ router.get("/active-orders", async (req, res) => {
 });
 
 router.get("/order-status", async (req, res) => {
-  const { chainId, orderHash } = req.query;
-  const result = await getOrderByHash(chainId, orderHash);
+  const { orderHash } = req.query;
+  const result = await orderStatus(orderHash);
   res.status(200).json({
     success: true,
     result,
@@ -48,6 +49,16 @@ router.post("/order-status", async (req, res) => {
       message: "Error fetching order status",
       error: error.message,
     });
+  }
+});
+
+router.get("/all-orders", async (req, res) => {
+  try {
+    const orders = await FusionPlus.find().sort({ _id: -1 });
+    res.json({ success: true, count: orders.length, data: orders });
+  } catch (err) {
+    console.error("Error fetching Fusion orders:", err.message);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 });
 
