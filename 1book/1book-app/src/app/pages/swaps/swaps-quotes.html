@@ -81,7 +81,7 @@
       (click)="bestQuote()"
       [disabled]="!swapForm.form.valid"
     >
-      Get Quotes
+      Best Quote
     </button>
   </form>
 </div>
@@ -176,4 +176,43 @@
       </tbody>
     </table>
   </div>
+</div>
+<div *ngIf="gasCosts?.length > 0" style="margin-top: 2rem">
+  <h3>Estimated Gas Fee</h3>
+  <table
+    border="1"
+    style="
+      width: 100%;
+      background-color: #f3f4f6;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    "
+  >
+    <thead>
+      <tr style="background-color: #e5e7eb">
+        <th style="padding: 0.5rem">Level</th>
+        <th style="padding: 0.5rem">Gas Fee</th>
+        <th style="padding: 0.5rem">Gas Cost (USD)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let gas of gasCosts">
+        <td
+          style="
+            text-transform: capitalize;
+            text-align: center;
+            padding: 0.5rem;
+          "
+        >
+          {{ gas.urgency }}
+        </td>
+        <td style="text-align: center; padding: 0.5rem">
+          {{ gas.gasFeeInNative }} {{ gas.asset }}
+        </td>
+        <td style="text-align: center; padding: 0.5rem">
+          ${{ gas.gasFeeInUSD }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>

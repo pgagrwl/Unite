@@ -1,11 +1,10 @@
 <div style="padding: 1rem">
-  <h2>
-    Address of the 1inch Router that is trusted to spend funds for the swap
-  </h2>
+  <h2>Actual escrow factory contract address</h2>
 
   <div *ngIf="loading">Loading...</div>
 
-  <div *ngIf="spendersData?.result">
+  <div *ngIf="escrowData?.result">
+    <!-- Results Table -->
     <table
       border="1"
       cellpadding="8"
@@ -15,19 +14,19 @@
       <thead>
         <tr>
           <th>Network</th>
-          <th>Spender Address</th>
+          <th>Escrow Factory Address</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let res of spendersData?.result">
+        <tr *ngFor="let res of escrowData?.result">
           <td>{{ res.network }}</td>
           <td>
             <a
-              [href]="getExplorerUrl(res.chainId, res.trustedSpender)"
+              [href]="getExplorerUrl(res.chainId, res.address)"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {{ res.trustedSpender }}
+              {{ res.address }}
             </a>
           </td>
         </tr>

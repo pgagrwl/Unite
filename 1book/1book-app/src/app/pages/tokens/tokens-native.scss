@@ -1,0 +1,40 @@
+.chain-form {
+  margin-bottom: 1rem;
+
+  select {
+    margin-left: 0.5rem;
+  }
+
+  button {
+    margin-left: 1rem;
+  }
+}
+
+.chain-details {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+
+  h2 {
+    margin-top: 0;
+  }
+
+  .tag {
+    display: inline-block;
+    background: #e0e0e0;
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin: 0 4px;
+    font-size: 0.85rem;
+  }
+
+  .active {
+    color: green;
+    font-weight: bold;
+  }
+
+  .inactive {
+    color: red;
+    font-weight: bold;
+  }
+}

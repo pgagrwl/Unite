@@ -1,16 +1,10 @@
-<div style="padding: 2rem">
-  <h2>MetaMask Connect Demo</h2>
-  <button (click)="connectWallet()">Connect MetaMask</button>
-  <p *ngIf="address">🔗 Connected: {{ address }}</p>
-</div>
-
 <div style="padding: 1rem">
   <h2>Portfolio Data</h2>
 
   <label>
     <input
       [(ngModel)]="manualAddress"
-      placeholder="Enter address if wallet not connected"
+      placeholder="Enter wallet address"
       style="width: 100%; max-width: 400px; margin-bottom: 1rem"
     />
   </label>
@@ -63,12 +57,6 @@
     </label>
   </div>
 
-  <input
-    [(ngModel)]="portfolioFilter"
-    placeholder="Quick Filter by name or symbol"
-    style="margin-bottom: 1rem; width: 300px"
-  />
-
   <table
     border="1"
     cellpadding="8"
@@ -77,30 +65,29 @@
   >
     <thead>
       <tr>
+        <th (click)="setSort('network')">Network</th>
         <th (click)="setSort('symbol')">Symbol</th>
         <th (click)="setSort('name')">Name</th>
-        <th (click)="setSort('network')">Network</th>
         <th (click)="setSort('balance')">Balance</th>
         <th (click)="setSort('value')">Value ({{ currency }})</th>
-        <th>Logo</th>
         <th>Address</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let item of getSortedFilteredTokens()">
-        <td>{{ item.symbol }}</td>
-        <td>{{ item.name }}</td>
         <td>{{ item.network }}</td>
-        <td>{{ item.balance }}</td>
-        <td>{{ item.value }}</td>
         <td>
           <img
             [src]="item.logoURI"
             alt="{{ item.symbol }}"
             width="30"
             height="30"
-          />
+          />{{ item.symbol }}
         </td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.balance }}</td>
+        <td>{{ item.value }}</td>
+
         <td style="font-size: small">
           <a
             [href]="getExplorerUrl(item.chainId, item.address)"

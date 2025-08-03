@@ -4,12 +4,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { getExplorerUrlAddress } from '../../utils/explorerLinks';
 import { classicSwapChains } from './../../utils/networks';
-import { NgSelectModule } from '@ng-select/ng-select';
+import { BaseUrl } from '../../utils/config';
 
 @Component({
   selector: 'app-swap-quotes',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgSelectModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './swaps-quotes.html',
   styleUrl: './swaps.scss',
 })
@@ -40,6 +40,7 @@ export class SwapQuotesComponent implements OnInit {
   };
 
   loading = false;
+  gasCosts: any;
 
   constructor(private http: HttpClient) {}
 
@@ -65,7 +66,7 @@ export class SwapQuotesComponent implements OnInit {
     this.loading = true;
     try {
       const res: any = await this.http
-        .get(`http://localhost:3000/swaps/tokens-list?chainId=${id}`)
+        .get(`${BaseUrl}/swaps/tokens-list?chainId=${id}`)
         .toPromise();
 
       this.tokenList = res?.result[0]?.data || [];
@@ -146,19 +147,56 @@ export class SwapQuotesComponent implements OnInit {
       .set('amount', rawAmount)
       .set('chainId', chainId.toString());
 
-    this.http
-      .get('http://localhost:3000/swaps/best-quote', { params })
-      .subscribe({
-        next: (res: any) => {
-          console.log(res);
-          this.bestData = res;
-          this.loading = false;
-        },
-        error: () => {
-          this.bestData = { result: [] };
-          this.loading = false;
-        },
-      });
+    this.http.get(`${BaseUrl}/swaps/best-quote`, { params }).subscribe({
+      next: (res: any) => {
+        this.bestData = res;
+        this.loading = false;
+        this.http
+          .get(`${BaseUrl}/gas/gas-price?chainId=${chainId}`)
+          .subscribe((gasRes: any) => {
+            const result = gasRes.result?.[0];
+            const gasUsed = res.result.gas;
+            const nativeAsset = result.asset;
+            const nativeAssetPrice = parseFloat(result.price);
+            const nativeDecimals = result.decimals;
+            const gasPriceData = result.gasPrice;
+
+            let gasLevels: { urgency: string; gasPrice: number }[] = [];
+
+            if ('low' in gasPriceData && 'maxFeePerGas' in gasPriceData.low) {
+              // EIP-1559-style
+              gasLevels = ['low', 'medium', 'high'].map((level) => ({
+                urgency: level,
+                gasPrice: parseFloat(gasPriceData[level].maxFeePerGas),
+              }));
+            } else {
+              // Legacy-style
+              gasLevels = ['standard', 'fast', 'instant'].map((level) => ({
+                urgency: level,
+                gasPrice: parseFloat(gasPriceData[level]),
+              }));
+            }
+
+            this.gasCosts = gasLevels.map((g) => {
+              const gasFeeInNative =
+                (g.gasPrice * gasUsed) / Math.pow(10, nativeDecimals);
+              const gasFeeInUSD = gasFeeInNative * nativeAssetPrice;
+              const na = nativeAsset;
+
+              return {
+                urgency: g.urgency,
+                gasFeeInNative: gasFeeInNative.toFixed(6),
+                gasFeeInUSD: gasFeeInUSD.toFixed(2),
+                asset: na,
+              };
+            });
+          });
+      },
+      error: () => {
+        this.bestData = { result: [] };
+        this.loading = false;
+      },
+    });
   }
 
   getExplorerUrl(chainId: number, address: string): string {

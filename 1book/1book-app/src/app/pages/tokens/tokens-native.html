@@ -1,0 +1,82 @@
+<div class="chain-form">
+  <h3>Select Chain & Provider</h3>
+
+  <label for="providerSelect">Provider:</label>
+  <select
+    [(ngModel)]="selectedProvider"
+    id="providerSelect"
+    (change)="fetchChainData()"
+  >
+    <option value="coingecko">CoinGecko</option>
+    <option value="coinmarketcap">CoinMarketCap</option>
+  </select>
+
+  <label for="chainSelect">Chain:</label>
+  <select
+    [(ngModel)]="selectedChainId"
+    id="chainSelect"
+    (change)="fetchChainData()"
+  >
+    <option [ngValue]="null">-- Select a Chain --</option>
+    <option *ngFor="let chain of chains" [value]="chain.id">
+      {{ chain.network }}
+    </option>
+  </select>
+</div>
+
+<hr />
+
+<div *ngIf="loading">🔄 Loading chain info...</div>
+
+<div *ngIf="responseData?.success" class="chain-details">
+  <h2>{{ responseData.result.name }} ({{ responseData.result.symbol }})</h2>
+
+  <p>
+    <strong>Status:</strong>
+    <span
+      [ngClass]="{
+        active: responseData.result.status === 'active',
+        inactive: responseData.result.status !== 'active'
+      }"
+    >
+      {{ responseData.result.status | titlecase }}
+    </span>
+  </p>
+
+  <p><strong>Description:</strong> {{ responseData.result.description }}</p>
+
+  <p>
+    <strong>Website:</strong>
+    <a [href]="responseData.result.website" target="_blank">
+      {{ responseData.result.website }}
+    </a>
+  </p>
+
+  <p>
+    <strong>Explorer:</strong>
+    <a [href]="responseData.result.explorer" target="_blank">
+      {{ responseData.result.explorer }}
+    </a>
+  </p>
+
+  <p>
+    <strong>Research:</strong>
+    <a [href]="responseData.result.research" target="_blank"> View Research </a>
+  </p>
+
+  <div *ngIf="responseData.result.tags?.length">
+    <strong>Tags:</strong>
+    <span class="tag" *ngFor="let tag of responseData.result.tags">
+      {{ tag }}
+    </span>
+  </div>
+
+  <div *ngIf="responseData.result.links?.length">
+    <strong>Links:</strong>
+    <ul>
+      <li *ngFor="let link of responseData.result.links">
+        <a [href]="link.url" target="_blank">{{ link.name | titlecase }}</a>
+      </li>
+    </ul>
+  </div>
+</div>

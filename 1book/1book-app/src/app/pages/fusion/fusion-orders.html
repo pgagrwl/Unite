@@ -1,0 +1,129 @@
+<h2>Gasless swap orders</h2>
+<div *ngIf="loading" class="loading">Loading fusion orders...</div>
+
+<div *ngIf="!loading">
+  <div class="filters">
+    <label>
+      Network:
+      <select [(ngModel)]="filters.network">
+        <option value="">All</option>
+        <option *ngFor="let network of uniqueNetworks" [value]="network">
+          {{ network }}
+        </option>
+      </select>
+    </label>
+
+    <label>
+      Status:
+      <select [(ngModel)]="filters.status">
+        <option value="">All</option>
+        <option *ngFor="let status of uniqueStatuses" [value]="status">
+          {{ status }}
+        </option>
+      </select>
+    </label>
+  </div>
+
+  <table class="orders-table">
+    <thead>
+      <tr>
+        <th>Order Hash</th>
+        <th>Network</th>
+        <th>Chain</th>
+        <th>Maker</th>
+        <th>Taker Asset</th>
+        <th>Making Amount</th>
+        <th>Taking Amount</th>
+        <th>Status</th>
+        <th>Created At</th>
+        <th>Expand</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let order of paginatedOrders">
+        <tr>
+          <td>{{ order.orderHash.slice(0, 10) }}...</td>
+          <td>{{ order.network }}</td>
+          <td>{{ order.chainId }}</td>
+          <td>{{ order.orderDetails.order.maker.slice(0, 6) }}...</td>
+          <td>{{ order.orderDetails.order.takerAsset }}</td>
+          <td>{{ order.orderDetails.order.makingAmount }}</td>
+          <td>{{ order.orderDetails.order.takingAmount }}</td>
+          <td>
+            {{
+              order.orderStatus[order.orderStatus.length - 1]?.status ||
+                "unknown"
+            }}
+          </td>
+          <td>
+            {{
+              order.orderStatus[order.orderStatus.length - 1]?.createdAt
+                | date : "short"
+            }}
+          </td>
+          <td>
+            <button (click)="toggleExpand(order._id)">
+              {{ expandedOrderId === order._id ? "▲" : "▼" }}
+            </button>
+          </td>
+        </tr>
+
+        <tr
+          *ngIf="expandedOrderId === order._id && hasFills(order)"
+          class="fill-row"
+        >
+          <td colspan="10">
+            <table class="fills-table">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Created At</th>
+                  <th>Tx Hash</th>
+                  <th>Maker Amount</th>
+                  <th>Taker Amount</th>
+                  <th>Taker Fee</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let status of order.orderStatus">
+                  <tr *ngFor="let fill of status.fills || [{}]">
+                    <td>{{ status.status }}</td>
+                    <td>{{ status.createdAt | date : "short" }}</td>
+                    <td>
+                      <a
+                        *ngIf="fill.txHash"
+                        [href]="getExplorerLink(order.chainId, fill.txHash)"
+                        target="_blank"
+                      >
+                        {{ fill.txHash | slice : 0 : 10 }}...
+                      </a>
+                    </td>
+                    <td>{{ fill.filledMakerAmount || "-" }}</td>
+                    <td>{{ fill.filledAuctionTakerAmount || "-" }}</td>
+                    <td>{{ fill.takerFeeAmount || "-" }}</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+
+  <div class="pagination-controls">
+    <button
+      (click)="changePage(currentPage - 1)"
+      [disabled]="currentPage === 1"
+    >
+      ◀ Prev
+    </button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button
+      (click)="changePage(currentPage + 1)"
+      [disabled]="currentPage === totalPages"
+    >
+      Next ▶
+    </button>
+  </div>
+</div>

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WalletService } from '../wallet-connect/wallet-connect.service';
+import { BaseUrl } from '../../utils/config';
 
 @Component({
   selector: 'app-api-view',
@@ -37,26 +38,24 @@ export class ApiViewComponent implements OnInit {
 
   availableSwaps() {
     this.swapLoading = true;
-    this.http
-      .get('http://localhost:3000/swaps/available-swap-tokens')
-      .subscribe({
-        next: (res) => {
-          this.swapData = res;
-          this.swapLoading = false;
-          this.extractUniqueNetworks();
-        },
-        error: (err) => {
-          this.swapData = { error: 'Failed to fetch data' };
-          this.swapLoading = false;
-        },
-      });
+    this.http.get(`${BaseUrl}/swaps/available-swap-tokens`).subscribe({
+      next: (res) => {
+        this.swapData = res;
+        this.swapLoading = false;
+        this.extractUniqueNetworks();
+      },
+      error: (err) => {
+        this.swapData = { error: 'Failed to fetch data' };
+        this.swapLoading = false;
+      },
+    });
   }
 
   fetchData() {
     this.loading = true;
     this.http
       .get(
-        'http://localhost:3000/swaps/quotes?srcAsset=0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee&dstAsset=0x111111111117dc0aa78b770fa6a738034120c302&amount=10000000000000000&chainId=1&protocol=BALANCER'
+        '${BaseUrl}/swaps/quotes?srcAsset=0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee&dstAsset=0x111111111117dc0aa78b770fa6a738034120c302&amount=10000000000000000&chainId=1&protocol=BALANCER'
       )
       .subscribe({
         next: (res) => {

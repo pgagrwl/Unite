@@ -5,6 +5,7 @@ import { WalletService } from '../../components/wallet-connect/wallet-connect.se
 import { FormsModule } from '@angular/forms';
 import { ethers } from 'ethers';
 import { getExplorerUrlAddress } from '../../utils/explorerLinks';
+import { BaseUrl } from '../../utils/config';
 
 @Component({
   standalone: true,
@@ -59,7 +60,7 @@ export class HomeComponent implements OnInit {
     this.loading = true;
     this.http
       .get(
-        `http://localhost:3000/balance/all-token-balance?address=${targetAddress}&currency=${this.currency}`
+        `${BaseUrl}/balance/all-token-balance?address=${targetAddress}&currency=${this.currency}`
       )
       .subscribe({
         next: (res: any) => {
@@ -172,12 +173,11 @@ export class HomeComponent implements OnInit {
   }
 
   supportedCurrencies() {
-    this.http.get(`http://localhost:3000/balance/currencies`).subscribe({
+    this.http.get(`${BaseUrl}/balance/currencies`).subscribe({
       next: (res: any) => {
         this.loading = false;
         if (res?.success) {
           this.currencies = res.result;
-          console.log(this.currencies);
         }
       },
       error: (err) => {

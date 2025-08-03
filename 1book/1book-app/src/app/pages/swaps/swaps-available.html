@@ -6,7 +6,6 @@
   <div *ngIf="swapLoading">Loading...</div>
 
   <div *ngIf="swapData?.result">
-    <!-- Filter Controls -->
     <div style="margin: 1rem 0">
       <label>
         Filter by Network:
@@ -37,7 +36,6 @@
       </label>
     </div>
 
-    <!-- Single Combined Table -->
     <table
       border="1"
       cellpadding="8"
@@ -47,26 +45,24 @@
       <thead>
         <tr>
           <th>Network</th>
-          <th>Logo</th>
           <th>Symbol</th>
           <th>Name</th>
           <th>Price In USD</th>
           <th>Address</th>
-          <th>EIP-2612</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let token of getAllFilteredTokens()">
           <td>{{ token.network }}</td>
+
           <td>
             <img
               [src]="token.logoURI"
               alt="{{ token.symbol }}"
               width="30"
               height="30"
-            />
+            />{{ token.symbol }}
           </td>
-          <td>{{ token.symbol }}</td>
           <td>{{ token.name }}</td>
           <td>$ {{ token.priceInUSD ? token.priceInUSD : "No Data" }}</td>
           <td style="font-size: small">
@@ -78,7 +74,6 @@
               {{ token.address }}
             </a>
           </td>
-          <td>{{ token.eip2612 ? "Yes" : "No" }}</td>
         </tr>
       </tbody>
     </table>
