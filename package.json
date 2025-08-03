@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ethersproject/bignumber": "^5.8.0",
+    "@ethersproject/units": "^5.8.0",
     "axios": "^1.11.0",
     "bignumber": "^1.1.0",
     "cors": "^2.8.5",

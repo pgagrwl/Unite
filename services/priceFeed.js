@@ -2,7 +2,7 @@ const { allTokenBalance } = require("../1ch/balance.js");
 const { tokenData } = require("../1ch/token.js");
 const { priceList } = require("../1ch/spotPrice.js");
 const { tokenDetails } = require("../1ch/tokenDetails.js");
-const bn = require("bignumber.js");
+const bn = require("@ethersproject/bignumber");
 
 async function priceData(chain, currency) {
   let results = [];

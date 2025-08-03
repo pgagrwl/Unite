@@ -1,7 +1,8 @@
 const { allTokenBalance, supportedCurrencies } = require("../1ch/balance.js");
 const { tokenData } = require("../1ch/token.js");
-const { priceList, currencies } = require("../1ch/spotPrice.js");
-const BigNumber = require("bignumber.js");
+const { priceList } = require("../1ch/spotPrice.js");
+const { BigNumber } = require("@ethersproject/bignumber");
+const { formatUnits, parseUnits } = require("@ethersproject/units");
 const defaultChains = require("../utils/chains.js");
 
 async function allBalance(address, currency) {
@@ -11,15 +12,15 @@ async function allBalance(address, currency) {
     const balances = await allTokenBalance(address, chain.id);
 
     const nonZeroTokens = Object.entries(balances)
-      .filter(([_, balance]) => new BigNumber(balance).gt(0))
+      .filter(([_, balance]) => BigNumber.from(balance).gt(0))
       .map(([tokenAddress, balance]) => ({
         address: tokenAddress,
-        balance: new BigNumber(balance),
+        balance: BigNumber.from(balance),
       }));
 
     if (nonZeroTokens.length === 0) continue;
 
-    const sortedTokens = nonZeroTokens.sort((a, b) => b.balance - a.balance);
+    const sortedTokens = nonZeroTokens.sort((a, b) => b.balance.sub(a.balance));
 
     const tokenAddresses = sortedTokens.map((t) => t.address);
 
@@ -30,14 +31,15 @@ async function allBalance(address, currency) {
 
     const formatted = sortedTokens.map(({ address, balance }) => {
       const tokenInfo = tokenInfoMap[address] || {};
-      const decimals = tokenInfo.decimals;
-      const price = new BigNumber(priceMap[tokenInfo.address]);
-      const convertedBalance = new BigNumber(balance)
-        .dividedBy(10 ** decimals)
-        .toFixed(4);
-      const value = new BigNumber(convertedBalance)
-        .multipliedBy(price)
-        .toFixed(4);
+      const decimals = tokenInfo.decimals || 18;
+      const price = priceMap[tokenInfo.address] || "0";
+
+      const convertedBalance = parseFloat(
+        formatUnits(balance, decimals)
+      ).toFixed(4); // string
+      const value = (parseFloat(convertedBalance) * parseFloat(price)).toFixed(
+        4
+      );
 
       return {
         chainId: chain.id,
@@ -64,16 +66,14 @@ async function commonCurrencies() {
   for (const chain of defaultChains) {
     const res = await supportedCurrencies(chain.id);
 
-    const returnRes = {
+    result.push({
       chainId: chain.id,
       network: chain.network,
       currencies: res.codes,
-    };
-    result.push(returnRes);
+    });
   }
-  const commonCurrencies = Array.from(getCommonCurrencies(result));
 
-  return commonCurrencies;
+  return Array.from(getCommonCurrencies(result));
 }
 
 function getCommonCurrencies(data) {

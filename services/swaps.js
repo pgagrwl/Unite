@@ -6,7 +6,6 @@ const {
   getQuotes,
 } = require("../1ch/swaps.js");
 const { tokenPrice, priceList } = require("../1ch/spotPrice.js");
-const BN = require("bignumber.js");
 const swapTokenCache = {};
 const tokenListCache = {};
 
