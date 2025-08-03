@@ -1,0 +1,28 @@
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    padding: 8px;
+    border: 1px solid #ccc;
+    text-align: left;
+  }
+
+  th {
+    background-color: #f0f0f0;
+  }
+}
+
+.filters {
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 2rem;
+
+  label {
+    font-weight: bold;
+  }
+
+  select {
+    margin-left: 0.5rem;
+  }
+}

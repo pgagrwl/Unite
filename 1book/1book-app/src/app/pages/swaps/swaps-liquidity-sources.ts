@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { BaseUrl } from '../../utils/config';
 
 @Component({
   selector: 'app-swap-sources',
@@ -29,7 +30,7 @@ export class SwapLiquidityComponent implements OnInit {
 
   fetchSources() {
     this.loading = true;
-    this.http.get('http://localhost:3000/swaps/liquidity-sources').subscribe({
+    this.http.get(`${BaseUrl}/swaps/liquidity-sources`).subscribe({
       next: (res: any) => {
         this.sourcesData = res;
         this.extractUniqueNetworks();

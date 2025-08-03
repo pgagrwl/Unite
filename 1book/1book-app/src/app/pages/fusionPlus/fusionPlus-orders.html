@@ -1,0 +1,215 @@
+<h2>Cross chain swap orders</h2>
+<div *ngIf="loading" class="loading">Loading fusion plus orders...</div>
+
+<div *ngIf="!loading">
+  <table class="orders-table">
+    <thead>
+      <tr>
+        <th>Order Hash</th>
+        <th>Source Network</th>
+        <th>Destination Network</th>
+        <th>Maker</th>
+        <th>Taker Asset</th>
+        <th>Making Amount</th>
+        <th>Taking Amount</th>
+        <th>Order Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let order of paginatedOrders">
+        <tr>
+          <td>{{ order.orderHash.slice(0, 10) }}...</td>
+          <td>{{ order.srcNetwork }}</td>
+          <td>{{ order.dstNetwork }}</td>
+          <td>{{ order.orderDetails.order.maker.slice(0, 6) }}...</td>
+          <td>{{ order.orderDetails.order.takerAsset }}</td>
+          <td>{{ order.orderDetails.order.makingAmount }}</td>
+          <td>{{ order.orderDetails.order.takingAmount }}</td>
+          <td>
+            <button (click)="getOrderStatus(order.orderHash)">View</button>
+          </td>
+        </tr>
+
+        <tr
+          *ngIf="expandedOrderId === order._id && hasFills(order)"
+          class="fill-row"
+        >
+          <td colspan="10">
+            <table class="fills-table">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Created At</th>
+                  <th>Tx Hash</th>
+                  <th>Maker Amount</th>
+                  <th>Taker Amount</th>
+                  <th>Taker Fee</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let status of order.orderStatus">
+                  <tr *ngFor="let fill of status.fills || []">
+                    <td>{{ status.status }}</td>
+                    <td>{{ status.createdAt | date : "short" }}</td>
+                    <td>
+                      <a
+                        *ngIf="fill.txHash"
+                        [href]="getExplorerLink(order.srcChainId, fill.txHash)"
+                        target="_blank"
+                      >
+                        {{ fill.txHash | slice : 0 : 10 }}...
+                      </a>
+                    </td>
+                    <td>{{ fill.filledMakerAmount || "-" }}</td>
+                    <td>{{ fill.filledAuctionTakerAmount || "-" }}</td>
+                    <td>{{ fill.takerFeeAmount || "-" }}</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+
+  <div class="pagination-controls">
+    <button
+      (click)="changePage(currentPage - 1)"
+      [disabled]="currentPage === 1"
+    >
+      ◀ Prev
+    </button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button
+      (click)="changePage(currentPage + 1)"
+      [disabled]="currentPage === totalPages"
+    >
+      Next ▶
+    </button>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="orderStatus">
+  <div class="modal-content">
+    <h3>Fusion+ Order Summary</h3>
+
+    <table>
+      <tr>
+        <td><strong>Order Hash:</strong></td>
+        <td>{{ orderStatus.orderHash }}</td>
+      </tr>
+      <tr>
+        <td><strong>Status:</strong></td>
+        <td>{{ orderStatus.status }}</td>
+      </tr>
+      <tr>
+        <td><strong>Created:</strong></td>
+        <td>{{ orderStatus.createdAt | date : "short" }}</td>
+      </tr>
+      <tr>
+        <td><strong>From Chain:</strong></td>
+        <td>{{ orderStatus.srcChainId }}</td>
+      </tr>
+      <tr>
+        <td><strong>To Chain:</strong></td>
+        <td>{{ orderStatus.dstChainId }}</td>
+      </tr>
+      <tr>
+        <td><strong>Maker:</strong></td>
+        <td>{{ orderStatus.order?.maker }}</td>
+      </tr>
+      <tr>
+        <td><strong>Maker Asset:</strong></td>
+        <td>{{ orderStatus.order?.makerAsset }}</td>
+      </tr>
+      <tr>
+        <td><strong>Taker Asset:</strong></td>
+        <td>{{ orderStatus.order?.takerAsset }}</td>
+      </tr>
+      <tr>
+        <td><strong>Making Amount:</strong></td>
+        <td>{{ orderStatus.order?.makingAmount }}</td>
+      </tr>
+      <tr>
+        <td><strong>Taking Amount:</strong></td>
+        <td>{{ orderStatus.order?.takingAmount }}</td>
+      </tr>
+      <tr>
+        <td><strong>Src Token USD price:</strong></td>
+        <td>${{ orderStatus.srcTokenPriceUsd }}</td>
+      </tr>
+      <tr>
+        <td><strong>Dst Token USD price:</strong></td>
+        <td>${{ orderStatus.dstTokenPriceUsd }}</td>
+      </tr>
+    </table>
+
+    <hr />
+
+    <h4>Fills:</h4>
+    <div *ngIf="orderStatus.fills?.length > 0; else noFills">
+      <div *ngFor="let fill of orderStatus.fills" class="fill-section">
+        <p>
+          <strong>Tx Hash:</strong>
+          <a
+            *ngIf="fill.txHash"
+            [href]="getExplorerLinkBySide(orderStatus, fill.txHash, 'src')"
+            target="_blank"
+          >
+            {{ fill.txHash }}
+          </a>
+        </p>
+        <p>
+          <strong>Filled Maker Amount:</strong> {{ fill.filledMakerAmount }}
+        </p>
+        <p>
+          <strong>Filled Auction Amount:</strong>
+          {{ fill.filledAuctionTakerAmount }}
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Escrow</th>
+              <th>Side</th>
+              <th>Block Time</th>
+              <th>Tx</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let event of fill.escrowEvents">
+              <td>{{ event.action }}</td>
+              <td>{{ event.escrow }}</td>
+              <td>{{ event.side }}</td>
+              <td>{{ event.blockTimestamp | date : "short" }}</td>
+              <td>
+                <a
+                  [href]="
+                    getExplorerLinkBySide(
+                      orderStatus,
+                      event.transactionHash,
+                      event.side
+                    )
+                  "
+                  target="_blank"
+                >
+                  View Tx
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <hr />
+      </div>
+    </div>
+
+    <ng-template #noFills>
+      <p>No fills recorded yet.</p>
+    </ng-template>
+
+    <button (click)="orderStatus = null">Close</button>
+  </div>
+</div>

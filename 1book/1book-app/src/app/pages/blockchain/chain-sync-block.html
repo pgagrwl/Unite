@@ -1,11 +1,10 @@
 <div style="padding: 1rem">
-  <h2>
-    Address of the 1inch Router that is trusted to spend funds for the swap
-  </h2>
+  <h2>Blocks Synced</h2>
 
   <div *ngIf="loading">Loading...</div>
 
-  <div *ngIf="spendersData?.result">
+  <div *ngIf="blocksData?.result">
+    <!-- Results Table -->
     <table
       border="1"
       cellpadding="8"
@@ -15,19 +14,28 @@
       <thead>
         <tr>
           <th>Network</th>
-          <th>Spender Address</th>
+          <th>From Block Number</th>
+          <th>To Block Number</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let res of spendersData?.result">
+        <tr *ngFor="let res of blocksData?.result">
           <td>{{ res.network }}</td>
           <td>
             <a
-              [href]="getExplorerUrl(res.chainId, res.trustedSpender)"
+              [href]="getBlockUrl(res.chainId, res.from)"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {{ res.trustedSpender }}
+              {{ res.from }}
+            </a>
+          </td>
+          <td>
+            <a
+              [href]="getBlockUrl(res.chainId, res.from)"
+              target="_blank"
+              rel="noopener noreferrer"
+              >{{ res.to }}
             </a>
           </td>
         </tr>

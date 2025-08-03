@@ -2,18 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { getExplorerUrlAddress } from '../../utils/explorerLinks';
+import { getExplorerBlockUrl } from '../../utils/explorerLinks';
 import { BaseUrl } from '../../utils/config';
 
 @Component({
-  selector: 'app-swap-trusted',
+  selector: 'app-chain-block',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './swaps-trusted-spenders.html',
-  styleUrl: './swaps.scss',
+  templateUrl: './chain-sync-block.html',
 })
-export class SwapTrustesComponent implements OnInit {
-  spendersData: any = null;
+export class ChainBlockComponent implements OnInit {
+  blocksData: any = null;
   uniqueNetworks: string[] = [];
 
   filters = {
@@ -26,24 +25,24 @@ export class SwapTrustesComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.fetchSpenders();
+    this.fetchBlocks();
   }
 
-  fetchSpenders() {
+  fetchBlocks() {
     this.loading = true;
-    this.http.get(`${BaseUrl}/swaps/trusted-spenders`).subscribe({
+    this.http.get(`${BaseUrl}/trace/blocks-data`).subscribe({
       next: (res: any) => {
-        this.spendersData = res;
+        this.blocksData = res;
         this.loading = false;
       },
       error: () => {
-        this.spendersData = { result: [] };
+        this.blocksData = { result: [] };
         this.loading = false;
       },
     });
   }
 
-  getExplorerUrl(chainId: number, address: string): string {
-    return getExplorerUrlAddress(chainId, address);
+  getBlockUrl(chainId: number, blockNumber: number): string {
+    return getExplorerBlockUrl(chainId, blockNumber);
   }
 }

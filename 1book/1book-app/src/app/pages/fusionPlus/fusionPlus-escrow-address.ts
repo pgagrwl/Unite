@@ -6,14 +6,13 @@ import { getExplorerUrlAddress } from '../../utils/explorerLinks';
 import { BaseUrl } from '../../utils/config';
 
 @Component({
-  selector: 'app-swap-trusted',
+  selector: 'app-fusion-escrow',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './swaps-trusted-spenders.html',
-  styleUrl: './swaps.scss',
+  templateUrl: './fusionPlus-escrow-address.html',
 })
-export class SwapTrustesComponent implements OnInit {
-  spendersData: any = null;
+export class FusionPlusEscrowComponent implements OnInit {
+  escrowData: any = null;
   uniqueNetworks: string[] = [];
 
   filters = {
@@ -31,13 +30,13 @@ export class SwapTrustesComponent implements OnInit {
 
   fetchSpenders() {
     this.loading = true;
-    this.http.get(`${BaseUrl}/swaps/trusted-spenders`).subscribe({
+    this.http.get(`${BaseUrl}/fusion-plus/escrow-addresses`).subscribe({
       next: (res: any) => {
-        this.spendersData = res;
+        this.escrowData = res;
         this.loading = false;
       },
       error: () => {
-        this.spendersData = { result: [] };
+        this.escrowData = { result: [] };
         this.loading = false;
       },
     });

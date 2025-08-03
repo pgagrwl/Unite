@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { BaseUrl } from '../../utils/config';
 
 @Component({
   selector: 'app-escrow-view',
@@ -25,17 +26,15 @@ export class FusionPlusViewComponent implements OnInit {
 
   fetchEscrowData() {
     this.loading = true;
-    this.http
-      .get('http://localhost:3000/fusion-plus/escrow-addresses')
-      .subscribe({
-        next: (res) => {
-          this.data = res;
-          this.loading = false;
-        },
-        error: (err) => {
-          this.data = { error: 'Failed to fetch data' };
-          this.loading = false;
-        },
-      });
+    this.http.get(`${BaseUrl}/fusion-plus/escrow-addresses`).subscribe({
+      next: (res) => {
+        this.data = res;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.data = { error: 'Failed to fetch data' };
+        this.loading = false;
+      },
+    });
   }
 }

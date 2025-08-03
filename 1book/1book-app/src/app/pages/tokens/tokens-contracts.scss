@@ -1,0 +1,56 @@
+.token-ui {
+  padding: 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #fcfcfc;
+  max-width: 700px;
+  margin: auto;
+}
+
+.token-header h2 {
+  font-size: 1.8rem;
+}
+
+.symbol {
+  font-weight: normal;
+  font-size: 1.2rem;
+  color: #777;
+}
+
+.status {
+  font-weight: bold;
+}
+.status.active {
+  color: green;
+}
+.status.inactive {
+  color: red;
+}
+
+.description {
+  font-style: italic;
+  margin: 1rem 0;
+}
+
+.tag {
+  display: inline-block;
+  background: #d0eaff;
+  padding: 4px 10px;
+  margin: 3px;
+  border-radius: 5px;
+  font-size: 0.85rem;
+}
+
+.market-data {
+  background: #f5f9ff;
+  border-left: 4px solid #0077cc;
+  padding: 1rem;
+  margin-top: 1.2rem;
+  border-radius: 6px;
+}
+
+.provider {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
