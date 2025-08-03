@@ -1,1 +1,1 @@
-export const BaseUrl = 'http://54.251.116.26:3000';
+export const BaseUrl = 'https://tinyurl.com/2abrndx9';
